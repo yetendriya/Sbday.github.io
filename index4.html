@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Birthday Surprise</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: #fff0f5;
+      overflow-x: hidden;
+      position: relative;
+    }
+    #countdown {
+      font-size: 3rem;
+      font-weight: bold;
+      padding: 20px;
+      border: 3px solid #ff69b4;
+      border-radius: 10px;
+      display: inline-block;
+      background-color: #fff;
+      color: #d63384;
+      margin-top: 50px;
+    }
+    .hidden {
+      display: none;
+    }
+    #hidden-message {
+      font-size: 2rem;
+      color: #ff4081;
+      margin-top: 20px;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 2rem;
+      color: red;
+      animation: floatUp 3s ease-in-out forwards;
+    }
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-150px) scale(1.5); }
+    }
+
+    .photo-slider {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+      margin-top: 30px;
+    }
+    .photo-track {
+      display: flex;
+      width: 220%;
+      gap: 25px;
+      animation: slide 20s linear infinite;
+    }
+    .photo {
+      border: 15px solid white;
+      box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+      background-color: white;
+      text-align: center;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .photo img {
+      max-width: 350px;
+      max-height: 500px;
+      object-fit: cover;
+    }
+    @keyframes slide {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+    .photo-track:hover { animation-play-state: paused; }
+
+    .note-section, .video-messages-section {
+      display: none;
+      width: 100%;
+      text-align: center;
+      margin-top: 50px;
+      background: #fff;
+      padding: 20px;
+    }
+    .note-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      flex-wrap: wrap;
+    }
+    .note-content {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      max-width: 60%;
+      font-size: 1.5rem;
+      color: #333;
+    }
+    .note-content h2 {
+      color: #d63384;
+      font-size: 2.5rem;
+    }
+    .note-image {
+      max-width: 35%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-messages-section h2 {
+      font-size: 2.5rem;
+      color: #d63384;
+      margin-bottom: 20px;
+    }
+    .video-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .video-gallery video {
+      width: 300px;
+      border: 5px solid #fff;
+      box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .note-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      .note-content {
+        max-width: 100%;
+      }
+      .note-image {
+        max-width: 80%;
+      }
+    }
+    .love-letter-icon {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  font-size: 40px;
+  cursor: pointer;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.love-letter {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 90%;
+  max-width: 400px;
+  transform: translate(-50%, -50%);
+  background: #fff8f0;
+  border: 2px dashed #ff99aa;
+  padding: 20px;
+  font-family: 'Brush Script MT', cursive;
+  font-size: 24px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  border-radius: 16px;
+  z-index: 9999;
+}
+
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #444;
+}
+
+.letter-text {
+  white-space: pre-wrap;
+}
+.timeline-gallery {
+  padding: 40px;
+  background-color: #fdfdfd;
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+}
+
+.timeline-gallery h2 {
+  font-size: 28px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  color: #444;
+}
+
+.photo-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.photo-card {
+  position: relative;
+  width: 250px;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.photo-card:hover {
+  transform: scale(1.03);
+}
+
+.photo-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+}
+
+.caption {
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+.photo-card:hover .overlay {
+  opacity: 1;
+}
+
+.final-quote {
+  margin-top: 60px;
+  font-size: 20px;
+  font-style: italic;
+  color: #666;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+
+  </style>
+</head>
+<script>
+  const correctPassword = "Saahamma"; // 💖 change this to your secret
+  const input = prompt("Enter the secret password to view the page:");
+  if (input !== correctPassword) {
+    document.body.innerHTML = "<h2 style='text-align:center; margin-top:100px;'>Access Denied ❌</h2>";
+    throw new Error("Unauthorized Access");
+  }
+</script>
+
+<body>
+  <div id="countdown"></div>
+
+  <div id="hidden-message" class="hidden">
+    <h2>Happy 23rd Birthday Saahamma! 💗</h2>
+    <p>Wishing you all the happiness and success. You are amazing!</p>
+
+    <div class="photo-slider">
+        <div class="photo-track">
+            <!-- Original Set -->
+            <div class="photo"><img src="photo1.jpg" alt=""></div>
+            <div class="photo"><img src="photo2.jpg" alt=""></div>
+            <div class="photo"><img src="photo3.jpg" alt=""></div>
+            <div class="photo"><img src="photo4.jpg" alt=""></div>
+            <div class="photo"><img src="photo5.jpg" alt=""></div>
+            <div class="photo"><img src="photo6.jpg" alt=""></div>
+            <div class="photo"><img src="photo7.jpg" alt=""></div>
+            <div class="photo"><img src="photo8.jpg" alt=""></div>
+            <div class="photo"><img src="photo9.jpg" alt=""></div>
+            <div class="photo"><img src="photo10.jpg" alt=""></div>
+            <div class="photo"><img src="photo11.jpg" alt=""></div>
+            
+            <!-- Duplicate Set for Infinite Loop -->
+            <div class="photo"><img src="photo1.jpg" alt=""></div>
+            <div class="photo"><img src="photo2.jpg" alt=""></div>
+            <div class="photo"><img src="photo3.jpg" alt=""></div>
+            <div class="photo"><img src="photo4.jpg" alt=""></div>
+            <div class="photo"><img src="photo5.jpg" alt=""></div>
+            <div class="photo"><img src="photo6.jpg" alt=""></div>
+            <div class="photo"><img src="photo7.jpg" alt=""></div>
+            <div class="photo"><img src="photo8.jpg" alt=""></div>
+            <div class="photo"><img src="photo9.jpg" alt=""></div>
+            <div class="photo"><img src="photo10.jpg" alt=""></div>
+            <div class="photo"><img src="photo11.jpg" alt=""></div>
+        </div>
+        
+  </div>
+<!-- Note Section -->
+<div class="note-section" id="note-section">
+  <div class="note-container">
+    <div class="note-content">
+      <h2>Note for You 💖</h2>
+      <p>
+        Saahithaliii, Happy Birthday Kannammalu...  
+        HAAPY BIRTHDAY SAAHAMMA
+      </p>
+    </div>
+    <img class="note-image" src="photo1.jpg" alt="Your Picture" />
+  </div>
+</div>
+
+
+  <!-- Video Messages Section -->
+  <div class="video-messages-section" id="video-messages-section">
+    <h2>Your Friends Have Something to Say 🎥</h2>
+    <div class="video-gallery">
+      <video controls>
+        <source src="friend1.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <video controls>
+        <source src="friend2.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <video controls>
+        <source src="friend3.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <video controls>
+        <source src="friend4.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <video controls>
+        <source src="friend5.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <video controls>
+        <source src="friend6.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <video controls>
+        <source src="friend7.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <video controls>
+        <source src="friend8.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </div>
+
+  <!-- Background Music -->
+  <audio id="background-music" loop>
+    <source src="Urike.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
+  <!-- Heart Icon Button -->
+<div class="love-letter-icon" onclick="openLetter()">❤️</div>
+
+<!-- Hidden Love Letter -->
+<div id="loveLetter" class="love-letter">
+  <span class="close-btn" onclick="closeLetter()">✖️</span>
+  <p class="letter-text">
+    To the love of my life,<br><br>
+    My dearest Saahamma,<br><br>
+    From the day you walked into my life, everything changed.
+Your smile, your soul—everything about you is my peace, my joy.
+You're not just my love, you're my heart, my world, my everything.  
+    Happy Birthday, love. 💖  
+    <br><br>Forever yours,<br>Yethamma
+  </p>
+</div>
+<section class="timeline-gallery">
+
+
+    <!-- 🌱 The Early Days -->
+    <h2>The Early Days</h2>
+    <div class="photo-row">
+      <div class="photo-card">
+        <img src="baby2.jpg" alt="">
+        <div class="overlay">Our little star 🌟</div>
+        <p class="caption">Laddu Babu </p>
+      </div>
+      <div class="photo-card">
+        <img src="baby1.jpg" alt="">
+        <div class="overlay">bundle of joy</div>
+        <p class="caption">little monster</p>
+      </div>
+      <div class="photo-card">
+        <img src="baby3.jpg" alt="">
+        <div class="overlay">He never stopped smiling</div>
+        <p class="caption">Full of energy and chaos</p>
+      </div>
+    </div>
+  
+    <!-- 👨‍👩‍👦 Family Bond -->
+    <h2>Family Bond</h2>
+    <div class="photo-row">
+      <div class="photo-card">
+        <img src="with_momm.jpg" alt="With mom">
+        <div class="overlay">Her whole world ❤️</div>
+        <p class="caption">Mama's Boy</p>
+      </div>
+      <div class="photo-card">
+        <img src="with_dad.jpg" alt="With dad">
+        <div class="overlay">Like father, like son</div>
+        <p class="caption">Dad's Pride</p>
+      </div>
+      <div class="photo-card">
+        <img src="with_bro.jpg" alt="With brother">
+        <div class="overlay">Partners since birth 🧑‍🤝‍🧑</div>
+        <p class="caption">Forever Brothers</p>
+      </div>
+      <div class="photo-card">
+        <img src="with_fam1.jpg" alt="With Family">
+        <div class="overlay">The love that raised him</div>
+        <p class="caption">His Home</p>
+      </div>
+    </div>
+  
+    <!-- 🎉 Partners in Crime -->
+    <h2>Partners in Crime</h2>
+    <div class="photo-row">
+      <div class="photo-card">
+        <img src="with_fri11.jpg" alt="Friend 1">
+        <div class="overlay">Trouble never looked this fun!</div>
+        <p class="caption">Crazy Buddies</p>
+      </div>
+      <div class="photo-card">
+        <img src="with_fri22.jpg" alt="Friend 2">
+        <div class="overlay">Laughs that never ended 😂</div>
+        <p class="caption">Memory Makers</p>
+      </div>
+      <div class="photo-card">
+        <img src="with_fri3.jpg" alt="Friend 3">
+        <div class="overlay">Partners in every prank!</div>
+        <p class="caption">Unbreakable Bond</p>
+      </div>
+    </div>
+  
+    <!-- ❤️ The Love Chapter -->
+    <h2>The Love Chapter</h2>
+    <div class="photo-row">
+      <div class="photo-card">
+        <img src="with_L1.jpg" alt="With Me">
+        <div class="overlay">Ala modalayindi</div>
+        <p class="caption">Forever in My Heart</p>
+      </div>
+      <div class="photo-card">
+        <img src="with_L2.jpg" alt="With Me 2">
+        <div class="overlay">A love that lives on 💞</div>
+        <p class="caption">My Safe Place</p>
+      </div>
+      <div class="photo-card">
+        <img src="with_L3.jpg" alt="With Me 3">
+        <div class="overlay">Every moment was magic</div>
+        <p class="caption">My Forever</p>
+      </div>
+    </div>
+  
+    <!-- ✨ Ending Message -->
+    <div class="end-message">
+      <h3>“Our story lives on in my heart”</h3>
+      <p>Thank you for all the memories.</p>
+    </div>
+  
+  </section>
+  
+
+
+
+  <script>
+    const birthday = new Date().getTime() + 10000; // Countdown: 10s
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const timeLeft = birthday - now;
+
+      if (timeLeft <= 0) {
+        clearInterval(countdownInterval);
+        document.getElementById('countdown').style.display = 'none';
+        document.getElementById('hidden-message').classList.remove('hidden');
+        document.getElementById('note-section').style.display = 'block';
+        document.getElementById('video-messages-section').style.display = 'block';
+
+        // Scroll to the top of message
+        document.getElementById('hidden-message').scrollIntoView({ behavior: 'smooth' });
+
+        // Play music
+        document.getElementById('background-music').play().catch(e => console.log("Autoplay blocked"));
+
+        for (let i = 0; i < 20; i++) {
+          createHeart();
+        }
+        return;
+      }
+
+      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+      document.getElementById('countdown').innerHTML = `🎂 ${seconds}s left!`;
+    }
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.innerHTML = '❤️';
+      heart.classList.add('heart');
+      document.body.appendChild(heart);
+
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+
+      heart.style.left = `${x}px`;
+      heart.style.top = `${y}px`;
+
+      setTimeout(() => { heart.remove(); }, 3000);
+    }
+    function openLetter() {
+  document.getElementById('loveLetter').style.display = 'block';
+}
+
+function closeLetter() {
+  document.getElementById('loveLetter').style.display = 'none';
+}
+
+
+    const countdownInterval = setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+  </script>
+  <script>
+    const backgroundMusic = document.getElementById("background-music");
+    const videos = document.querySelectorAll(".video-gallery video");
+  
+    videos.forEach((video) => {
+      video.addEventListener("play", () => {
+        backgroundMusic.pause();
+      });
+  
+      video.addEventListener("ended", () => {
+        // Check if no other video is playing
+        const anyPlaying = Array.from(videos).some(v => !v.paused && !v.ended);
+        if (!anyPlaying) {
+          backgroundMusic.play();
+        }
+      });
+  
+      video.addEventListener("pause", () => {
+        // Resume only if no other video is currently playing
+        const anyPlaying = Array.from(videos).some(v => !v.paused && !v.ended);
+        if (!anyPlaying) {
+          backgroundMusic.play();
+        }
+      });
+    });
+  
+    // Optional: start background music automatically after countdown
+    window.onload = () => {
+      setTimeout(() => {
+        backgroundMusic.play().catch(() => {
+          // Handle autoplay restrictions silently
+        });
+      }, 1000); // You can change this timing based on countdown
+    };
+  </script>
+  
+</body>
+</html>
